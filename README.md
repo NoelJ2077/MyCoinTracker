@@ -15,13 +15,13 @@ https://docs.kraken.com/rest/
 Python3 interpreter
 
 # Flask Framework Tools
-Flask
-Flask-Login
+Flask,
+Flask-Login,
 Flask-WTF
 
 # System 
-Requests
-SQLite3
-uuid
-hashlib
-os
+Requests,
+SQLite3,
+uuid,
+hashlib,
+os,
