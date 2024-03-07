@@ -1,0 +1,52 @@
+/* Flash messages styles */
+.flashes {
+    display: block;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+}
+
+.flashes li {
+    list-style-type: none;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 110%;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    max-width: 80%;
+    margin: 20px auto;
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.flashes li a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+/* Flash messages for Dashboard in Top Navbar */
+#flash-messages {
+    position: fixed;
+    width: auto;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 10px auto;
+}
+
+.flash-message {
+    display: inline-block;
+    padding: 5px 10px;
+    color: #fff;
+    background-color: #dc3545;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}

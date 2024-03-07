@@ -1,0 +1,245 @@
+/* Dark Mode Styling */
+
+/* Define variables for color scheme */
+:root {
+    --background-color: #292929;
+    --background-nav-color: #363636;
+    --text-color: #FFFFFF;
+    --primary-color: #a25bfa;
+    --secondary-color: #07c586;
+    --container-bg-color: #423b3b;
+    --container-padding: 1.25rem; /* 20px */
+    --container-border-radius: 0.5rem; /* 8px */
+    --max-width-form-container: 350px;
+    --margin-l-r-dash-container: 2% 4% 2% 5%;
+    --navbar-height: 60px;
+    --footer-height: 50px;
+    --footer-padding: 0.9375rem; /* 15px */
+    --form-input-margin-bottom: 1.25rem; /* 20px */
+    --link-hover-transition: background-color 0.3s ease;
+    --btn-padding: 0.625rem; /* 10px */
+    --btn-border-radius: 0.25rem; /* 4px */
+    /* Button colors */
+    --delete-btns-color: #7a0505;
+    --delete-btns-hover-color: #ff0000;
+}
+
+
+/* Login form styling */
+.form-container {
+    width: 400px;
+    margin: 20px auto !important;
+    padding: 20px;
+    background-color: var(--container-bg-color);
+    border-radius: 10px;
+}
+
+.form-container h1 {
+    text-align: center;
+    color: var(--text-color);
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+
+/* base style for all input fields */
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"] {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid var(--background-nav-color);
+    border-radius: 5px;
+    background-color: #333;
+    color: var(--text-color);
+}
+
+.form-container input[type="submit"] {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 5px;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.form-container input[type="submit"]:hover {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+/* Dashboard container styling */
+.dashcontainer {
+    margin: 20px auto;
+    width: 80%;
+}
+
+/* Portfolio navigation bar styling */
+.portfolio-navbar {
+    background-color: #2C2C2C;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+/* Button hover effect for all button-like elements */
+.button-style:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Additional style adjustments for dropdown */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--background-nav-color);
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Remove bottom border from the last dropdown item */
+.dropdown-content form:last-child .button-style {
+    border-bottom: none;
+}
+
+/* Portfolio display styling */
+.portfolio-display {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    color: #F5F5F5;
+}
+
+.portfolio-display table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.portfolio-display td {
+    border: 1px solid #454545;
+    padding: 10px;
+}
+
+
+/* Base styles for all button-like elements */
+.button-style,
+.logifaccount,
+.form-container input[type="submit"],
+.portfolio-form input[type="submit"],
+.register-btn,
+.reset-pw-btn,
+.delete-btn {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 5px;
+    color: var(--text-color);
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    
+}
+.logifaccount {
+    margin-left: 50px;
+}
+/* Consistent hover effect for all button-like elements */
+.button-style:hover,
+.logifaccount:hover,
+.form-container input[type="submit"]:hover,
+.portfolio-form input[type="submit"]:hover,
+.delete-btn:hover,
+.register-btn:hover,
+.reset-pw-btn:hover {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+/* Additional styling for portfolio form */
+.portfolio-form input[type="text"] {
+    width: 200px;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid var(--background-nav-color);
+    border-radius: 5px;
+    background-color: #333;
+    color: var(--text-color);
+}
+
+.portfolio-form input[type="submit"] {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 5px;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+/* Specific styles for delete buttons */
+.delete-btn {
+    background-color: var(--delete-btns-color);
+}
+
+/* Specific hover style for delete buttons */
+.delete-btn:hover {
+    background-color: var(--delete-btns-hover-color);
+}
+/* SPECIAL FOR COINPAIR DROPDOWN */
+
+/* Custom Dropdown Styles */
+.custom-dropdown {
+    display: none; /* Hidden by default */
+    position: absolute; /* Positioning relative to the nearest positioned ancestor */
+    background-color: var(--background-color);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--container-border-radius);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    overflow: hidden;
+    z-index: 1;
+}
+
+.custom-dropdown div {
+    padding: var(--btn-padding);
+    color: var(--text-color);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.custom-dropdown div:hover {
+    background-color: var(--primary-color);
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .custom-dropdown {
+        width: calc(100% - 2rem); /* Full width minus padding */
+    }
+}
+
+/* max 10 items in dropdown */
+.custom-dropdown div:nth-child(n+11) {
+    margin: 0 20px 0 10px;
+    display: none;
+}
+/* create scroll bar for dropdown with styles */
+.custom-dropdown {
+    margin: 0 20px 0 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--background-color);
+}
+.dropdown-item {
+    margin: 0 20px 0 10px;
+}

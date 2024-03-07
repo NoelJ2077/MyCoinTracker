@@ -1,0 +1,87 @@
+<!-- dashboard.html  -->
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashcontainer">
+    <!-- Secondary Navbar -->
+    <nav class="portfolio-navbar">
+
+        
+        <!-- Form um ein neues Portfolio zu erstellen -->
+        <h1>Portfolio Übersicht</h1>
+        <form action="{{ url_for('add_portfolio') }}" method="POST" class="portfolio-form">
+            <input type="text" name="portfolio_name" placeholder="Neues Portfolio Name" required>
+            <input type="submit" value="Erstellen">
+        </form>
+
+
+        <!-- Form um ein neues Coinpair hinzuzufügen -->
+        {% if current_portfolio %}
+        <form action="{{ url_for('add_coinpair') }}" method="POST" class="portfolio-form">
+            <input type="hidden" name="portfolio_id" value="{{ current_portfolio[0] }}">
+            <input type="text" name="coinpair_search" id="coinpair_search" placeholder="Suche Coinpair" autocomplete="off">
+            <div id="coinpair-dropdown" class="custom-dropdown">
+                <!-- javascript -->
+            </div>
+            <input type="hidden" name="coinpair" id="selected_coinpair" required>
+            <input type="submit" value="Hinzufügen">
+        </form>
+        {% endif %}
+        
+        
+
+        <!-- Form um das aktuelle Portfolio umzubenennen -->
+        {% if current_portfolio %}
+            <form action="{{ url_for('rename_portfolio') }}" method="POST" class="portfolio-form">
+                <input type="hidden" name="portfolio_id" value="{{ current_portfolio[0] }}">
+                <input type="text" name="new_name" placeholder="Neuer Portfolio Name" required>
+                <input type="submit" value="Umbenennen">
+            </form>
+        {% endif %}
+
+        <!-- Form to delete the current portfolio -->
+        {% if current_portfolio %}
+            <form action="{{ url_for('delete_portfolio') }}" method="POST" class="portfolio-form">
+                <input type="hidden" name="portfolio_id" value="{{ current_portfolio[0] }}">
+                <input type="submit" value="Aktuelles Portfolio löschen" class="delete-btn">
+            </form>
+        {% endif %}
+        <!-- Dropdown für die Auswahl des Portfolios -->
+        <div class="dropdown">
+            <button class="button-style dropbtn">Portfolio wählen</button>
+            <div class="dropdown-content">
+                {% for portfolio in portfolios %}
+                    <form action="{{ url_for('change_portfolio') }}" method="POST">
+                        <input type="hidden" name="portfolio_id" value="{{ portfolio[0] }}">
+                        <input type="submit" class="button-style" value="{{ portfolio[1] }}">
+                    </form>
+                {% endfor %}
+            </div>
+        </div>
+    </nav>
+
+    
+    <!-- neues Formular mit dem delete button bei jedem coinpair -->
+    <div class="portfolio-display">
+        {% if current_portfolio %}
+            <h2>{{ current_portfolio[1] }}</h2>
+            <table>
+                {% for coinpair in coinpairs %}
+                    <tr>
+                        <td>{{ coinpair }}</td>
+                        <td>
+                            <form action="{{ url_for('delete_coinpair') }}" method="POST">
+                                <input type="hidden" name="coinpair" value="{{ coinpair }}">
+                                <input type="submit" value="Löschen" class="delete-btn">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>Keine Portfolios vorhanden.</p>
+        {% endif %}
+</div>
+{% endblock %}

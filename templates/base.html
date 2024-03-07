@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!-- base.html -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %} - MyCoinTracker</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='footer.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='flash.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='base.css') }}">
+</head>
+<body>
+
+    <!-- Flash messages display section -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div id="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <nav class="navbar">
+        <div class="navbar-nav">
+            <!-- Benutzerinfo nur anzeigen, wenn ein Benutzer in der Session ist -->
+            {% if 'user_id' in session %}
+                <div class="user-info">
+                    <span class="user_logged">Angemeldet als: {{ session['username'] }} Email: ({{ session['email'] }})</span>
+                </div>
+                <div class="nav-links">
+                    <a class="nav-item nav-link" href="{{ url_for('logout') }}">Abmelden</a>
+                    <a class="nav-item nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <!-- Weitere Navigationselemente -->
+                </div>
+            {% else %}
+                <div class="nav-links">
+                    <a class="nav-item nav-link" href="{{ url_for('login') }}">Anmelden</a>
+                    <a class="nav-item nav-link" href="{{ url_for('register') }}">Registrieren</a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+    
+    <!-- Der Inhalt des gesamten Dashboards without Navbar! -->
+    <div class="container">
+        {% block content %} {% endblock %}
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            © 2024 Meine Webseite Kontakt: | Impressum | Datenschutz       
+            <a href="https://github.com/NoelJ2077">GitHub</a>
+            test123
+            <a href="test.com">test</a>
+            <!-- END: ed8c6549bwf9 -->
+        </div>
+    </footer>
+    
+    <script>
+        // JavaScript to remove the flash message after 10 seconds
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let flashMessage = document.querySelector('.flash-message');
+            if (flashMessage) {
+                setTimeout(() => {
+                    flashMessage.remove();
+                }, 10000);
+            }
+        });
+    </script>
+    <!-- include js file from static-->
+    <script src="static/apidropdown.js"></script>
+</body>
+</html>
