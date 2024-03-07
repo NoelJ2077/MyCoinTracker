@@ -2,7 +2,7 @@
 A simple Crypto Coin tracker with the Kraken V2 API 
 No warranty, but you can open a issue if you find bugs!
 
-# Login credentials for test
+# Login credentials for test (you could also just register)
 username: TestUser1
 password: asdf
 
