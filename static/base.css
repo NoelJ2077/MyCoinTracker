@@ -49,3 +49,26 @@ body {
 .user_logged {
     color: var(--primary-color);
 }
+#portfolio-show-cont {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--container-bg-color);
+}
+  
+#portfolio-name {
+    text-align: left;
+    margin-left: 20px;
+}
+  
+#portfolio-id {
+    text-align: right;
+    margin-right: 20px;
+}
+#portfolio-id,
+#portfolio-name {
+    background-color: var(--primary-color);
+    padding: 5px;
+    border-radius: 5px;
+    color: var(--text-color);
+}

@@ -16,22 +16,19 @@
             <input type="submit" value="Erstellen">
         </form>
 
-
         <!-- Form um ein neues Coinpair hinzuzufügen -->
         {% if current_portfolio %}
         <form action="{{ url_for('add_coinpair') }}" method="POST" class="portfolio-form">
             <input type="hidden" name="portfolio_id" value="{{ current_portfolio[0] }}">
-            <input type="text" name="coinpair_search" id="coinpair_search" placeholder="Suche Coinpair" autocomplete="off">
+            <input type="text" name="coinpair_search" id="coinpair_search" placeholder="Suche Paar z.b: XBT" autocomplete="off">
             <div id="coinpair-dropdown" class="custom-dropdown">
                 <!-- javascript -->
             </div>
             <input type="hidden" name="coinpair" id="selected_coinpair" required>
             <input type="submit" value="Hinzufügen">
         </form>
-        {% endif %}
+        {% endif %}        
         
-        
-
         <!-- Form um das aktuelle Portfolio umzubenennen -->
         {% if current_portfolio %}
             <form action="{{ url_for('rename_portfolio') }}" method="POST" class="portfolio-form">
@@ -48,6 +45,7 @@
                 <input type="submit" value="Aktuelles Portfolio löschen" class="delete-btn">
             </form>
         {% endif %}
+
         <!-- Dropdown für die Auswahl des Portfolios -->
         <div class="dropdown">
             <button class="button-style dropbtn">Portfolio wählen</button>
@@ -66,22 +64,52 @@
     <!-- neues Formular mit dem delete button bei jedem coinpair -->
     <div class="portfolio-display">
         {% if current_portfolio %}
-            <h2>{{ current_portfolio[1] }}</h2>
+            <!-- Show Name and ID  -->
+            <div id="portfolio-show-cont">
+                <h2 id="portfolio-name">Aktuelles Portfolio: {{ current_portfolio[1] }}</h2>
+                <h2 id="portfolio-id">Portfolio ID: {{ current_portfolio[0] }}</h2>
+                <form action="{{ url_for('export_portfolio') }}" method="post">
+                    <button type="submit" class="export-button">Exportieren</button>
+                </form>
+              </div>
             <table>
-                {% for coinpair in coinpairs %}
+                <thead>
                     <tr>
-                        <td>{{ coinpair }}</td>
+                        <!-- Header Row -->
+                        <th>Ticker</th>
+                        <th>Last Trade Price</th>
+                        <th>Volume</th>
+                        <th>Low</th>
+                        <th>High</th>
+                        <th>Open</th>
+                        <th>Close</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cp in coinpairs %}
+                    <tr>
+                        <!-- Price Data -->
+                        <td>{{ cp }}</td>
+                        <td>{{ coinpair_info[cp]['last_trade_price'] }}</td>
+                        <td>{{ coinpair_info[cp]['volume'] }}</td>
+                        <td>{{ coinpair_info[cp]['low_price'] }}</td>
+                        <td>{{ coinpair_info[cp]['high_price'] }}</td>
+                        <td>{{ coinpair_info[cp]['opening_price'] }}</td>
+                        <td>{{ coinpair_info[cp]['closing_price'] }}</td>
                         <td>
                             <form action="{{ url_for('delete_coinpair') }}" method="POST">
-                                <input type="hidden" name="coinpair" value="{{ coinpair }}">
+                                <input type="hidden" name="coinpair" value="{{ cp }}">
                                 <input type="submit" value="Löschen" class="delete-btn">
                             </form>
                         </td>
                     </tr>
-                {% endfor %}
+                    {% endfor %}
+                </tbody>
             </table>
         {% else %}
             <p>Keine Portfolios vorhanden.</p>
         {% endif %}
-</div>
+    </div>
+    
 {% endblock %}

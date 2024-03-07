@@ -76,7 +76,7 @@
 /* Dashboard container styling */
 .dashcontainer {
     margin: 20px auto;
-    width: 80%;
+    padding: 20px;
 }
 
 /* Portfolio navigation bar styling */
@@ -127,15 +127,22 @@
     border-collapse: collapse;
 }
 
-.portfolio-display td {
+.portfolio-display td, th {
     border: 1px solid #454545;
     padding: 10px;
+    text-align: center;
+    background-color: var(--container-bg-color);
 }
-
-
+.logifaccount {
+    margin-left: 50px;
+}
+.export-button {
+    margin-right: 20px;
+}
 /* Base styles for all button-like elements */
 .button-style,
 .logifaccount,
+.export-button,
 .form-container input[type="submit"],
 .portfolio-form input[type="submit"],
 .register-btn,
@@ -151,12 +158,11 @@
     display: inline-block;
     
 }
-.logifaccount {
-    margin-left: 50px;
-}
+
 /* Consistent hover effect for all button-like elements */
 .button-style:hover,
 .logifaccount:hover,
+.export-button:hover,
 .form-container input[type="submit"]:hover,
 .portfolio-form input[type="submit"]:hover,
 .delete-btn:hover,

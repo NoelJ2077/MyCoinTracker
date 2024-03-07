@@ -1,13 +1,99 @@
 # KRAKEN API V2
 import requests, json
-from flask import session
-from classDB import DatabaseManager, DATABASE
-# API URL
+# API URL KRAKEN
 BASE_URL = 'https://api.kraken.com/0/public/Ticker?pair='
 
 
-# fetch the coinpair data from the Kraken API
+# Function to get data for a single coin pair
 def get_coinpair_data(coinpair):
     response = requests.get(BASE_URL + coinpair)
-    return response.json()
+    if response.status_code == 200:
+        data = response.json()
+        # Check if there are no errors and the coinpair exists in the result
+        if not data['error'] and coinpair in data['result']:
+            return data['result'][coinpair]
+    return None
+
+
+# check if the coinpair is valid -> when adding a coinpair to a portfolio
+def api_checkpair(coinpair):
+
+    try:
+        response = requests.get(BASE_URL + coinpair)
+        if response.status_code == 200:
+            data = response.json()
+            # Prüfen Sie, ob es keine Fehler gibt und das Resultat den gesuchten Coinpair enthält
+            if not data['error'] and coinpair in data['result']:
+                return True
+            else:
+                return False
+        else:
+            print(f"Error with status code: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
+
+# from raw to: 1'000.00, 10'000.00 etc... | <= 999 = not changed
+def fetchthousand(value):
+    # convert the value to a float
+    try:
+        num = float(value)
+    except ValueError:
+        # If the value is not a number, return it as is
+        return value
+    
+    # If the number is greater than or equal to 1000
+    if num >= 1000:
+        # example output: 1'000.00, 10'000.00 etc...
+        # make 2 nachkommastellen
+        num = round(num, 2)
+        # format the number with a comma as a thousands separator apostrphe  eg: 1'000.00
+        return f"{num:,.2f}".replace(',', "'")
+    
+    else:
+        # If the number is less than 1000, return it is from JSON response
+        return f"{num:.8f}".rstrip('0').rstrip('.') if '.' in value else str(int(num))
+
+# using format: 
+    
+    """
+    [
+  {
+    "portfolio_id": "5e353ed1-8da5-4c35-a229-7398a75dd487",
+    "user_id": "6869f98a-ad40-45ea...",
+    "portfolio_name": "ASDF",
+    "coinpair": ["AVAXBXT", "ADAXBXT", "XBTUSDT"]
+  },
+  {
+    "portfolio_id": "9ad4b1a5-9a8f-4602...",
+    "user_id": "6869f98a-ad40-45ea...",
+    "portfolio_name": "QWE1",
+    "coinpair": []
+  }
+]
+    """
+    
+
+
+def export_json(portfolios):
+
+    export_data = []
+    
+    for portfolio in portfolios:
+        # Überprüfen, ob 'coinpairs' ein Schlüssel im Dictionary ist und eine Liste ist
+        if 'coinpairs' in portfolio and isinstance(portfolio['coinpairs'], list):
+            coinpair_list = portfolio['coinpairs']
+        else:
+            coinpair_list = []
+        
+        # Erstellen Sie das Dictionary für das aktuelle Portfolio
+        export_data.append({
+            "portfolio_id": portfolio['portfolio_id'],
+            "user_id": portfolio['user_id'],
+            "portfolio_name": portfolio['portfolio_name'],
+            "coinpair": coinpair_list
+        })
+    print(f"export_data: {export_data}")
+    return export_data
 

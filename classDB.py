@@ -1,6 +1,6 @@
 import sqlite3, uuid, hashlib, os
-from flask import Flask, render_template, request, redirect
-from flask import session
+from flask import flash
+from api import api_checkpair
 DATABASE = 'cointracker.db'
 
 class DatabaseManager:
@@ -12,7 +12,7 @@ class DatabaseManager:
         self.cursor.execute("PRAGMA foreign_keys = ON") # enable foreign key support
         self.conn.commit() # commit the changes
 
-    # Erstellen der Benutzer-, Portfolio- und Coinpair-Tabellen
+    # create the tables if they don't exist
     def create_table(self):
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS users (
             user_id TEXT PRIMARY KEY,
@@ -29,7 +29,7 @@ class DatabaseManager:
             FOREIGN KEY(user_id) REFERENCES users(user_id))''')
         self.conn.commit()
 
-    # hash password with bcrypt
+    # hash the password
     def hash_password(self, password):
         salt = os.urandom(32)  # Erstellen Sie ein neues Salz
         hashed_password = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
@@ -51,11 +51,6 @@ class DatabaseManager:
     def check_username(self, username):
         self.cursor.execute("SELECT * FROM users WHERE username=?", (username,))
         return self.cursor.fetchone() is not None
-    
-    # fetch user from the db
-    def get_user_by_id(self, user_id):
-        self.cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
-        return self.cursor.fetchone()
     
     # check user credentials
     def check_credentials(self, username, password):
@@ -101,22 +96,24 @@ class DatabaseManager:
         ''', (portfolio_id,))
         return self.cursor.fetchone()
     
-    # fetch all portfolios from the db
+    # fetch a portfolio and its coinpairs by its id
     def get_coinpairs_by_portfolio_id(self, portfolio_id):
         self.cursor.execute('''
             SELECT coinpair FROM portfolio WHERE portfolio_id=?
         ''', (portfolio_id,))
-        return self.cursor.fetchone()
-    
-    
-    # fetch all coinpairs from the db
-    def get_user_portfolios_with_coinpairs(self, user_id):
-        self.cursor.execute('''SELECT p.portfolio_id, p.portfolio_name, c.coinpair 
-                            FROM portfolio p
-                            LEFT JOIN coinpairs c ON p.portfolio_id = c.portfolio_id
-                            WHERE p.user_id=?''', (user_id,))
-        return self.cursor.fetchall()
-    
+        row = self.cursor.fetchone()
+
+        # Check if row is not None and if coinpair is not empty
+        if row and row[0]:
+            # Split by comma to get coinpairs and filter out any empty strings
+            coinpairs = row[0].split(',')
+            # Remove empty strings that can be caused by trailing commas
+            return [coinpair for coinpair in coinpairs if coinpair.strip()]
+        else:
+            # If there is no coinpair or it's empty, return an empty list
+            flash("Dieses Portfolio enthält noch keine Ticker!")
+            return []
+
     # fetch all portfolios from the db and store them in a list and store each coinpair to each portfolio
     def get_user_portfolios(self, user_id):
         self.cursor.execute('''SELECT portfolio_id, portfolio_name, coinpair FROM portfolio WHERE user_id=?''', (user_id,))
@@ -124,26 +121,32 @@ class DatabaseManager:
     
 
     """COINPAIR FUNCTIONS"""
-    def add_coinpair(self, user_id, coinpair):
-        print("Adding coinpair to portfolio")
+    def add_coinpair(self, portfolio_id, coinpair):
         try:
-            # Retrieve the user's portfolio id 
-            self.cursor.execute('''SELECT portfolio_id FROM portfolio WHERE user_id=? LIMIT 1''', (user_id,))
-            portfolio = self.cursor.fetchone()
-            if not portfolio:
-                print("Kein Portfolio gefunden.")
+            # Retrieve the user id from portfolio_id
+            self.cursor.execute('''SELECT user_id FROM portfolio WHERE portfolio_id=? LIMIT 1''', (portfolio_id,))
+            user_id = self.cursor.fetchone()
+            if not user_id:
+                print("Kein Benutzer gefunden.")
                 return False
-
-            portfolio_id = portfolio[0]
-            # Check if the coinpair already exists
-            self.cursor.execute('''SELECT * FROM coinpairs WHERE portfolio_id=? AND coinpair=?''', (portfolio_id, coinpair))
-            if self.cursor.fetchone():
-                print("Coinpair existiert bereits.")
+            # check if the coinpair is valid value = TRUE || FALSE
+            if not api_checkpair(coinpair):
+                flash("Dieser Ticker ist ungültig.")
                 return False
-
-            # Add the coinpair to the user's portfolio
-            self.cursor.execute('''INSERT INTO coinpairs (portfolio_id, coinpair) VALUES (?, ?)''', (portfolio_id, coinpair))
+            
+            # Check if the coinpair already exists exactly as it is ! attentation: pairs are comma separated
+            self.cursor.execute('''SELECT coinpair FROM portfolio WHERE portfolio_id=?''', (portfolio_id,))
+            result = self.cursor.fetchone()
+            if result and result[0]:
+                coinpairs = result[0].split(',')
+                if coinpair in coinpairs:
+                    flash("Dieser Ticker ist bereits in diesem Portfolio enthalten.")
+                    return False
+            
+            # Add the coinpair to the portfolio
+            self.cursor.execute('''UPDATE portfolio SET coinpair=IFNULL(coinpair, '') || ? WHERE portfolio_id=?''', (coinpair + ',', portfolio_id))
             self.conn.commit()
+            flash("Ticker erfolgreich hinzugefügt.")
             return True
         except Exception as e:
             print("Ein Fehler ist aufgetreten:", e)
@@ -154,15 +157,18 @@ class DatabaseManager:
 
 
     # remove a coinpair from a specific portfolio
-    def remove_pair(self, user_id, coinpair):
-        self.cursor.execute('''SELECT coinpair FROM portfolio WHERE user_id=?''', (user_id,))
+    def remove_pair(self, user_id, portfolio_id, coinpair):
+        self.cursor.execute('''SELECT coinpair FROM portfolio WHERE user_id=? AND portfolio_id=?''', (user_id, portfolio_id))
         result = self.cursor.fetchone()
         if result and result[0]:
             coinpairs = result[0].split(',')
-            coinpairs.remove(coinpair)
-            updated_coinpairs = ','.join(coinpairs)
-            self.cursor.execute('''UPDATE portfolio SET coinpair=? WHERE user_id=?''', (updated_coinpairs, user_id))
-            self.conn.commit()
+            if coinpair in coinpairs:
+                coinpairs.remove(coinpair)
+                updated_coinpairs = ','.join(coinpairs)
+                self.cursor.execute('''UPDATE portfolio SET coinpair=? WHERE user_id=? AND portfolio_id=?''', (updated_coinpairs, user_id, portfolio_id))
+                self.conn.commit()
+                flash("Ticker erfolgreich entfernt.")
+
 
     
 

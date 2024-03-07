@@ -1,0 +1,40 @@
+@media (max-width: 1024px) {
+    .portfolio-navbar {
+        flex-wrap: nowrap; /* Prevents wrapping of items */
+    }
+
+    .button-style,
+    .logifaccount,
+    .portfolio-form input[type="submit"],
+    .delete-btn {
+        padding: 5px 10px; /* Reduce padding */
+        font-size: 0.8em; /* Reduce font size */
+    }
+
+    .portfolio-form input[type="text"] {
+        width: auto; /* Adjust width to be more responsive */
+        flex-grow: 1; /* Allows the input to grow */
+        margin-right: 5px; /* Reduce margin */
+    }
+
+    /* Adjust the dropdown to fit within the navbar */
+    .custom-dropdown {
+        width: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: column; /* Stack the navigation items */
+        align-items: stretch; /* Stretch nav items to fill the width */
+    }
+
+    .nav-links {
+        flex-direction: column; /* Stack the nav links */
+    }
+
+    .portfolio-navbar,
+    .navbar-nav {
+        padding: 5px; /* Reduce padding for more space */
+    }
+}
