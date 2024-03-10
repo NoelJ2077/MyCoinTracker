@@ -14,7 +14,6 @@ def get_coinpair_data(coinpair):
             return data['result'][coinpair]
     return None
 
-
 # check if the coinpair is valid -> when adding a coinpair to a portfolio
 def api_checkpair(coinpair):
 
@@ -55,27 +54,7 @@ def fetchthousand(value):
         # If the number is less than 1000, return it is from JSON response
         return f"{num:.8f}".rstrip('0').rstrip('.') if '.' in value else str(int(num))
 
-# using format: 
-    
-    """
-    [
-  {
-    "portfolio_id": "5e353ed1-8da5-4c35-a229-7398a75dd487",
-    "user_id": "6869f98a-ad40-45ea...",
-    "portfolio_name": "ASDF",
-    "coinpair": ["AVAXBXT", "ADAXBXT", "XBTUSDT"]
-  },
-  {
-    "portfolio_id": "9ad4b1a5-9a8f-4602...",
-    "user_id": "6869f98a-ad40-45ea...",
-    "portfolio_name": "QWE1",
-    "coinpair": []
-  }
-]
-    """
-    
-
-
+# export the portfolios to a JSON file
 def export_json(portfolios):
 
     export_data = []

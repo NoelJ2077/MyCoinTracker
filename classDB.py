@@ -170,15 +170,3 @@ class DatabaseManager:
                 flash("Ticker erfolgreich entfernt.")
 
 
-    
-
-    
-    
-    
-
-
-    
-
-
-
-        
