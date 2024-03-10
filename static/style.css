@@ -26,7 +26,33 @@
     --font-size-small: 0.9rem; /* Smaller font size for mobile */
     --font-size-large: 1rem; /* Default font size for desktop */
 }
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+/* Navigation bar styling */
+.navbar {
+    background-color: var(--background-nav-color);
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--navbar-height);
+}
+.nav-links {
+    display: flex;
+    gap: 10px;
+}
+nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: var(--link-hover-transition);
+}
 
 /* Login form styling */
 .form-container {
@@ -36,7 +62,13 @@
     background-color: var(--container-bg-color);
     border-radius: 10px;
 }
+.nav-item {
+    justify-content: right;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: var(--link-hover-transition);
 
+}
 .form-container h1 {
     text-align: center;
     color: var(--text-color);
@@ -81,7 +113,12 @@
     margin: 20px auto;
     padding: 20px;
 }
-
+.navbar-nav {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 20px;
+}
 /* Portfolio navigation bar styling */
 .portfolio-navbar {
     background-color: #2C2C2C;
@@ -143,6 +180,8 @@
     margin-right: 20px;
 }
 /* Base styles for all button-like elements */
+a.nav-item.nav-link,
+.user-info,
 .button-style,
 .logifaccount,
 .export-button,
@@ -163,6 +202,7 @@
 }
 
 /* Consistent hover effect for all button-like elements */
+a.nav-item.nav-link:hover,
 .button-style:hover,
 .logifaccount:hover,
 .export-button:hover,
@@ -251,4 +291,11 @@
 }
 .dropdown-item {
     margin: 0 20px 0 10px;
+}
+#portfolio-id,
+#portfolio-name {
+    margin-right: 10px;
+    background-color: #543d5a;
+    color: var(--text-color);
+    border-radius: 10px;
 }
