@@ -3,10 +3,10 @@
 {% block title %}Registrieren{% endblock %}
 
 {% block content %}
-    <div class="form-container">
+    <div class="user-form-container">
         <h1>Register</h1>
-        <p>Alle Felder sind Pflichtfelder!</p>
-        <p>Bereits ein Konto? Hier Anmelden:<button class="logifaccount" onclick="location.href='{{ url_for('login') }}'">Anmelden</button></p>
+        <p>Alle drei Felder müssen ausgefüllt sein!</p>
+        <p>Bereits ein Konto? Hier Anmelden:<button class="button-style" onclick="location.href='{{ url_for('login') }}'">Anmelden</button></p>
         <!-- rewrite Anmelden with Button -->
 
         {% with messages = get_flashed_messages() %}
@@ -20,16 +20,22 @@
         {% endwith %}
 
         <form action="{{ url_for('register') }}" method="post">
+          <div class="group2">
             <label for="username">Benutzername:</label>
-            <input type="text" id="username" name="username" required>
-            <br>
+            <input type="text" class="username-pw" id="username" name="username" placeholder="username" required>
+          </div>
+          <div class="group2">
             <label for="email">E-Mail:</label>
-            <input type="email" id="email" name="email" required>
-            <br>
+            <input type="email" class="username-pw" id="email" name="email" placeholder="peter.mueller@gmail.com" required>
+          </div>
+          <div class="group2" id="login-btns">
             <label for="password">Passwort:</label>
-            <input type="password" id="password" name="password" required>
-            <br>
-            <input type="submit" value="Registrieren">
+            <input type="password" class="username-pw" id="password" name="password" placeholder="password" required>
+          </div>
+          <div class="group2">
+            <label for="login">Bereits Registriert?</label>
+            <button class="user-btns" onclick="location.href='{{ url_for('login') }}'">Anmelden</button>
+          </div>
         </form>        
     </div>
 {% endblock %}

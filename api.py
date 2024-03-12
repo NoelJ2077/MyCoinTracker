@@ -3,7 +3,6 @@ import requests, json
 # API URL KRAKEN
 BASE_URL = 'https://api.kraken.com/0/public/Ticker?pair='
 
-
 # Function to get data for a single coin pair
 def get_coinpair_data(coinpair):
     response = requests.get(BASE_URL + coinpair)

@@ -18,9 +18,11 @@ def page_not_found(e):
     return redirect(url_for('login'))
 
 def userIDset():
+    print(session)
     if 'user_id' not in session:
         flash('Bitte zuerst anmelden')
-        return redirect(url_for('login'))
+        return False
+    return True
 
 """ USER MANAGEMENT START"""
 @app.route('/')
@@ -66,7 +68,9 @@ def login():
                 return redirect(url_for('dashboard'))
             else:
                 flash('Falsche Anmeldedaten')
+                return redirect(url_for('login'))
         return render_template('login.html')
+        
     except Exception as e:
         print(f"Error in login: {e}")
         return redirect(ERRORURL)
@@ -93,52 +97,58 @@ def forgotpw():
 """ USER MANAGEMENT END"""
 # blank
 """ DASHBOARD"""
-@app.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
-    try:
-        # Prüfen, ob der Benutzer angemeldet ist
-        userIDset()
 
-        user_id = session['user_id']
-        portfolios = db.get_user_portfolios(user_id)
-
-        # Standardmäßig das erste Portfolio auswählen, falls vorhanden
-        if 'current_portfolio_id' not in session and portfolios:
-            session['current_portfolio_id'] = portfolios[0][0]
-
-        # Aktuelles Portfolio und Coinpairs abrufen
-        current_portfolio_id = session.get('current_portfolio_id') if 'current_portfolio_id' in session else None 
-        current_portfolio = db.get_portfolio_by_id(current_portfolio_id) if current_portfolio_id else None
-        coinpairs = db.get_coinpairs_by_portfolio_id(current_portfolio_id) if current_portfolio_id else None
-
-        # Coinpair-Informationen abrufen per API
-        coinpair_info = {}
-        try:
-            if coinpairs:
-                for cp in coinpairs:
-                    data = get_coinpair_data(cp)
-                    if data:
-                        # Extrahiere die benötigten Informationen aus der API-Antwort und formatiere die Zahlen.
-                        coinpair_info[cp] = {
-                            'last_trade_price': fetchthousand(data['c'][0]),
-                            'volume': fetchthousand(data['v'][0]),
-                            'low_price': fetchthousand(data['l'][0]),
-                            'high_price': fetchthousand(data['h'][0]),
-                            'opening_price': fetchthousand(data['o']),
-                            # Da es keinen 'close' in der API gibt, verwende den letzten Handelspreis.
-                            'closing_price': fetchthousand(data['c'][0])
-                        }
-        
-            return render_template('dashboard.html', portfolios=portfolios, current_portfolio=current_portfolio, coinpairs=coinpairs, coinpair_info=coinpair_info)
-        except Exception as e:
-                print(f"Error fetching coinpair data: {e}")
-                return redirect(ERRORURL)
-    except Exception as e:
-        print(f"Error in dashboard: {e}")
-        return redirect(ERRORURL)
     
 """ DASHBOARD END"""
 # blank
+""" PORTFOLIO MANAGEMENT START"""
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    # Check if the user is logged in
+    if not userIDset():
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    portfolios = db.get_user_portfolios(user_id)
+    coinpairs = None
+    current_portfolio = None  # Initialize current_portfolio
+
+    # Default to the first portfolio if it exists
+    if 'current_portfolio_id' not in session and portfolios:
+        session['current_portfolio_id'] = portfolios[0][0]
+
+    # Fetch current portfolio and coinpairs
+    current_portfolio_id = session.get('current_portfolio_id')
+    if current_portfolio_id:
+        try:
+            current_portfolio = db.get_portfolio_by_id(current_portfolio_id)
+            coinpairs = db.get_coinpairs_by_portfolio_id(current_portfolio_id)
+        except Exception as e:
+            print(f"Error fetching portfolio data: {e}")
+            return redirect(ERRORURL)
+
+    # Fetch coinpair information via API
+    coinpair_info = {}
+    if coinpairs:
+        try:
+            for cp in coinpairs:
+                data = get_coinpair_data(cp)
+                if data:
+                    # Extract and format the necessary information from the API response
+                    coinpair_info[cp] = {
+                        'last_trade_price': fetchthousand(data['c'][0]),
+                        'volume': fetchthousand(data['v'][0]),
+                        'low_price': fetchthousand(data['l'][0]),
+                        'high_price': fetchthousand(data['h'][0]),
+                        'opening_price': fetchthousand(data['o']),
+                        'closing_price': fetchthousand(data['c'][0])  # Use last trade price as closing price
+                    }
+        except Exception as e:
+            print(f"Error fetching coinpair data: {e}")
+            return redirect(ERRORURL)
+    # return render with the data:
+    return render_template('dashboard.html', portfolios=portfolios, current_portfolio=current_portfolio, coinpairs=coinpairs, coinpair_info=coinpair_info)
+
 """ PORTFOLIO MANAGEMENT START"""
 @app.route('/add_portfolio', methods=['POST'])
 def add_portfolio():
@@ -156,7 +166,7 @@ def add_portfolio():
     except Exception as e:
         print(f"Error in add_portfolio: {e}")
         return redirect(ERRORURL)
-
+    
 @app.route('/change_portfolio', methods=['POST'])
 def change_portfolio():
     try:

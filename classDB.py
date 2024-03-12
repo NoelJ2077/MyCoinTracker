@@ -3,6 +3,10 @@ from flask import flash
 from api import api_checkpair
 DATABASE = 'cointracker.db'
 
+def getdate(): # get date in format: dd:mm:yyyy hh:mm:ss
+    import datetime
+    return datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+
 class DatabaseManager:
     
     # create a connection to the SQLite database and a cursor object
@@ -26,6 +30,7 @@ class DatabaseManager:
             user_id TEXT,
             portfolio_name TEXT NOT NULL,
             coinpair TEXT,
+            created_at TEXT,
             FOREIGN KEY(user_id) REFERENCES users(user_id))''')
         self.conn.commit()
 
@@ -69,10 +74,11 @@ class DatabaseManager:
     # user_id will be taken from the session from the call to this function
     def add_portfolio(self, user_id, portfolio_name):
             portfolio_id = str(uuid.uuid4())
+            created_at = getdate()
             self.cursor.execute('''
-                INSERT INTO portfolio (portfolio_id, user_id, portfolio_name)
-                VALUES (?, ?, ?)
-            ''', (portfolio_id, user_id, portfolio_name))
+                INSERT INTO portfolio (portfolio_id, user_id, portfolio_name, created_at)
+                VALUES (?, ?, ?, ?)
+            ''', (portfolio_id, user_id, portfolio_name, created_at))
             self.conn.commit()
     
     # delete a portfolio from the db
@@ -92,11 +98,11 @@ class DatabaseManager:
     # fetch a portfolio by its id
     def get_portfolio_by_id(self, portfolio_id):
         self.cursor.execute('''
-            SELECT portfolio_id, portfolio_name FROM portfolio WHERE portfolio_id=?
+            SELECT portfolio_id, portfolio_name , created_at FROM portfolio WHERE portfolio_id=?
         ''', (portfolio_id,))
         return self.cursor.fetchone()
     
-    # fetch a portfolio and its coinpairs by its id
+    # fetch a portfolio and its coinpairs by portfolio id ^^^ above
     def get_coinpairs_by_portfolio_id(self, portfolio_id):
         self.cursor.execute('''
             SELECT coinpair FROM portfolio WHERE portfolio_id=?
@@ -116,7 +122,7 @@ class DatabaseManager:
 
     # fetch all portfolios from the db and store them in a list and store each coinpair to each portfolio
     def get_user_portfolios(self, user_id):
-        self.cursor.execute('''SELECT portfolio_id, portfolio_name, coinpair FROM portfolio WHERE user_id=?''', (user_id,))
+        self.cursor.execute('''SELECT portfolio_id, portfolio_name, coinpair, created_at FROM portfolio WHERE user_id=?''', (user_id,))
         return self.cursor.fetchall()
     
 
