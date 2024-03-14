@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+<!-- 405.html -->
+{% block title %}Error 405{% endblock %}
+<!-- Blueprint: 'user.' -->
+{% block content %}
+    <div class="user-form-container">
+        <h1>Error 405</h1>
+        <p>Diese URL ist nicht erlaubt. <br>Falls Sie einen Bug gefunden haben, erstellen Sie bitte ein Github Issue!</p>
+        <br>
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        
+        
+          <div class="group2">
+            <label for="login">Zurück zum Login</label>
+            <button class="user-btns" onclick="location.href='{{ url_for('user.login') }}'">Login</button>
+          </div>
+          <div class="group2">
+            <label for="login">Github Issue eröffnen &#40;Bitte alle Details übermitteln&#41;</label>
+            <button class="user-btns"><a href="https://github.com/NoelJ2077/MyCoinTracker/issues/new" target="_blank">Github Issue</a></button>
+          </div>
+    </div>
+{% endblock %}
+

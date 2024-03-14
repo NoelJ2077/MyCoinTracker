@@ -62,7 +62,11 @@ nav a {
     text-decoration: none;
     transition: var(--link-hover-transition);
 }
-
+a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: var(--link-hover-transition);
+}
 /* Container Styling */
 .user-form-container, .dashcontainer {
     margin: 20px auto;

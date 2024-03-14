@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 <!--login.html-->
 {% block title %}Anmelden{% endblock %}
-
+<!-- Blueprint: 'user.' 
+none for forgotpw -->
 {% block content %}
     <div class="user-form-container">
         <h1>Login</h1>
@@ -16,7 +17,7 @@
           {% endif %}
         {% endwith %}
         
-        <form action="{{ url_for('login') }}" method="post">
+        <form action="{{ url_for('user.login') }}" method="post">
           <div class="group2">
             <label for="username">Benutzername:</label>
             <input type="text" class="username-pw" id="username" name="username" placeholder="username" required>
@@ -26,12 +27,14 @@
             <input type="password"  class="username-pw" id="password" name="password" placeholder="username" required>
           </div>
           <div class="group2">
-            <input type="submit" value="Login">
             <button class="reset-pw-btn" onclick="location.href='{{ url_for('forgotpw') }}'">Passwort vergessen?</button>
+            <input type="submit" value="Login">
           </div>
           <div class="group2">
             <label for="register">Noch kein Konto?</label>
-            <button class="user-btns" onclick="location.href='{{ url_for('register') }}'">Registrieren</button>
+            <button class="user-btns" onclick="location.href='{{ url_for('user.register') }}'">Registrieren</button>
+          </div>
         </form>
     </div>
 {% endblock %}
+

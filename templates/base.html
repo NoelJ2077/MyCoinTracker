@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <!-- base.html -->
+<!-- Blueprint:
+'user.login' = login route
+'user.register' = register route
+'main.dashboard' = dashboard route
+'user.logout' = logout route
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -30,14 +36,14 @@
                     <span class="user_logged">Angemeldet als: {{ session['username'] }} Email: ({{ session['email'] }})</span>
                 </div>
                 <div class="nav-links">
-                    <a class="nav-item nav-link" href="{{ url_for('logout') }}">Abmelden</a>
-                    <a class="nav-item nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a class="nav-item nav-link" href="{{ url_for('user.logout') }}">Abmelden</a>
+                    <a class="nav-item nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
                     <!-- Weitere Navigationselemente -->
                 </div>
             {% else %}
                 <div class="nav-links">
-                    <a class="nav-item nav-link" href="{{ url_for('login') }}">Anmelden</a>
-                    <a class="nav-item nav-link" href="{{ url_for('register') }}">Registrieren</a>
+                    <a class="nav-item nav-link" href="{{ url_for('user.login') }}">Anmelden</a>
+                    <a class="nav-item nav-link" href="{{ url_for('user.register') }}">Registrieren</a>
                 </div>
             {% endif %}
         </div>
@@ -47,16 +53,16 @@
     <div class="container">
         {% block content %} {% endblock %}
     </div>
-    
+    <!-- © 2024 By Noël Jörg -->
     <footer class="footer">
         <div class="footer-content">
-            © 2024 Meine Webseite Kontakt: | Impressum | Datenschutz       
-            <a href="https://github.com/NoelJ2077">GitHub</a>
-            test123
-            <a href="test.com">test</a>
-            <!-- END: ed8c6549bwf9 -->
+            <span>© 2024 Meine Webseite</span>
+            <a href="/">Impressum</a>
+            <a href="https://www.gnu.org/licenses/gpl-3.0.de.html" target="_blank">Lizenz</a>
+            <a href="https://github.com/NoelJ2077" target="_blank">GitHub</a>
+            <a href="https://github.com/NoelJ2077/MyCoinTracker/archive/main.zip" download>Download Quellcode</a>
         </div>
-    </footer>
+    </footer>    
     
     <script>
         // JavaScript to remove the flash message after 10 seconds

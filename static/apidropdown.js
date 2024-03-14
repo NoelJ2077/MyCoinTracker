@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (query.length >= 2) {
             // Zeigen Sie das Dropdown an
             dropdown.style.display = 'block';
+            // gehen sie zu url und holen sie die daten
             fetch(`/api/search_coinpairs?query=${query}`)
                 .then(response => response.json())
                 .then(data => {
@@ -41,3 +42,4 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+

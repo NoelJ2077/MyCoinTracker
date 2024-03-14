@@ -11,7 +11,7 @@
         <div class="group">
             <!-- Form um ein neues Portfolio zu erstellen -->
             <h2 id="portfolio-name" title="{{ current_portfolio[1] }}">Portfolio: {{ current_portfolio[1] }}</h2>
-            <form action="{{ url_for('add_portfolio') }}" method="POST" class="portfolio-form">
+            <form action="{{ url_for('main.add_portfolio') }}" method="POST" class="portfolio-form">
                 <input type="text" name="portfolio_name" placeholder="Neues Portfolio Name" required>
                 <input type="submit" value="Erstellen">
             </form>
@@ -20,7 +20,7 @@
         <div class="group">
             <!-- Form um ein neues Coinpair hinzuzufügen -->
             {% if current_portfolio %}
-            <form action="{{ url_for('add_coinpair') }}" method="POST" class="portfolio-form">
+            <form action="{{ url_for('main.add_coinpair') }}" method="POST" class="portfolio-form">
                 <input type="hidden" name="portfolio_id" value="{{ current_portfolio[0] }}">
                 <input type="text" name="coinpair_search" id="coinpair_search" placeholder="Suche Paar z.b: XBT" autocomplete="off">
                 <div id="coinpair-dropdown" class="custom-dropdown">
@@ -33,7 +33,7 @@
             
             <!-- Form um das aktuelle Portfolio umzubenennen -->
             {% if current_portfolio %}
-                <form action="{{ url_for('rename_portfolio') }}" method="POST" class="portfolio-form">
+                <form action="{{ url_for('main.rename_portfolio') }}" method="POST" class="portfolio-form">
                     <input type="hidden" name="portfolio_id" value="{{ current_portfolio[0] }}">
                     <input type="text" name="new_name" placeholder="Portfolio Umbenennen" required>
                     <input type="submit" value="Umbenennen">
@@ -44,7 +44,7 @@
         <div class="group">
             <!-- Form to delete the current portfolio -->
             {% if current_portfolio %}
-                <form action="{{ url_for('delete_portfolio') }}" method="POST" class="portfolio-form">
+                <form action="{{ url_for('main.delete_portfolio') }}" method="POST" class="portfolio-form">
                     <input type="hidden" name="portfolio_id" value="{{ current_portfolio[0] }}">
                     <input type="submit" value="Aktuelles Portfolio löschen" class="delete-btn">
                 </form>
@@ -55,7 +55,7 @@
                 <button class="button-style dropbtn">Portfolio auswählen</button>
                 <div class="dropdown-content">
                     {% for portfolio in portfolios %}
-                        <form action="{{ url_for('change_portfolio') }}" method="POST">
+                        <form action="{{ url_for('main.change_portfolio') }}" method="POST">
                             <input type="hidden" name="portfolio_id" value="{{ portfolio[0] }}">
                             <input type="submit" class="button-style" value="{{ portfolio[1] }}">
                         </form>
@@ -76,7 +76,7 @@
             <div id="portfolio-show-cont">
     <h2 id="portfolio-created_at" title="{{ current_portfolio[2] }}">Erstellt am: {{ current_portfolio[2] }}</h2>
     <h2 id="portfolio-id" title="{{ current_portfolio[0] }}">Portfolio ID: {{ current_portfolio[0] }}</h2>
-    <form action="{{ url_for('export_portfolio') }}" method="post">
+    <form action="{{ url_for('main.export_portfolio') }}" method="post">
         <button type="submit" class="export-button">Exportieren</button>
     </form>
 </div>
@@ -107,7 +107,7 @@
                         <td><div class="padded-background">{{ coinpair_info[cp]['opening_price'] }}</div></td>
                         <td><div class="padded-background">{{ coinpair_info[cp]['closing_price'] }}</div></td>
                         <td>
-                            <form action="{{ url_for('delete_coinpair') }}" method="POST">
+                            <form action="{{ url_for('main.delete_coinpair') }}" method="POST">
                                 <input type="hidden" name="coinpair" value="{{ cp }}">
                                 <div class="padded-background">
                                     <input type="submit" value="Löschen" class="delete-btn">

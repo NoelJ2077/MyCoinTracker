@@ -3,7 +3,7 @@
 .footer {
     background-color: var(--background-nav-color);
     color: var(--text-color);
-    padding: 20px;
+    padding: 40px 0;
     text-align: center;
     position: fixed;
     width: 100%;
@@ -12,37 +12,20 @@
 
 .footer-content {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0 20px;
 }
 
-.footer-content p {
-    margin: 5px 0;
-}
-
-.footer-content a {
-    position: relative;
-    color: var(--primary-color);
+.footer-content > a {
+    margin: 0 10px;
+    color: #ddd3a3; /* Ensure this color contrasts well with the footer background */
     text-decoration: none;
-    transition: color 0.3s, border-bottom-color 0.3s;
-    white-space: nowrap !important;
 }
 
-.footer-content a:hover {
+.footer-content > a:hover {
     color: var(--secondary-color);
 }
 
-.footer-content a:hover span {
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-}
-
-.footer-content a:hover::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background-color: var(--secondary-color);
-}
