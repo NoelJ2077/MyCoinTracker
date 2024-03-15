@@ -2,7 +2,7 @@ import sqlite3, uuid, hashlib, os
 from flask import flash
 from api import api_checkpair
 DATABASE = 'cointracker.db'
-
+# for when portfolio is created
 def getdate(): # get date in format: dd:mm:yyyy hh:mm:ss
     import datetime
     return datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
@@ -34,13 +34,13 @@ class DatabaseManager:
             FOREIGN KEY(user_id) REFERENCES users(user_id))''')
         self.conn.commit()
 
-    # hash the password
+    # hash the password & create a new salt
     def hash_password(self, password):
         salt = os.urandom(32)  # Erstellen Sie ein neues Salz
         hashed_password = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
         return salt + hashed_password  # Speichern Sie das Salz zusammen mit dem Hash
 
-    # salt the password
+    # hash the password with the salt
     def salt_password(self, password, salt):
         return hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
     
@@ -174,5 +174,4 @@ class DatabaseManager:
                 self.cursor.execute('''UPDATE portfolio SET coinpair=? WHERE user_id=? AND portfolio_id=?''', (updated_coinpairs, user_id, portfolio_id))
                 self.conn.commit()
                 flash("Ticker erfolgreich entfernt.")
-
 

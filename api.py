@@ -1,9 +1,11 @@
 # KRAKEN API V2
-import requests, json
+import requests
 # API URL KRAKEN
 BASE_URL = 'https://api.kraken.com/0/public/Ticker?pair='
+# Error url -> create new issue with {e} as title
+ERRORURL = 'https://github.com/NoelJ2077/MyCoinTracker/issues/new'
 
-# Function to get data for a single coin pair
+# get coins from the API with input data
 def get_coinpair_data(coinpair):
     response = requests.get(BASE_URL + coinpair)
     if response.status_code == 200:
@@ -13,9 +15,8 @@ def get_coinpair_data(coinpair):
             return data['result'][coinpair]
     return None
 
-# check if the coinpair is valid -> when adding a coinpair to a portfolio
+# check if the coinpair exists in the API
 def api_checkpair(coinpair):
-
     try:
         response = requests.get(BASE_URL + coinpair)
         if response.status_code == 200:
@@ -53,7 +54,7 @@ def fetchthousand(value):
         # If the number is less than 1000, return it is from JSON response
         return f"{num:.8f}".rstrip('0').rstrip('.') if '.' in value else str(int(num))
 
-# export the portfolios to a JSON file
+# export the portfolios as a JSON file
 def export_json(portfolios):
 
     export_data = []
