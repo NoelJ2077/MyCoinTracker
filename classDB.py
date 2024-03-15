@@ -70,7 +70,6 @@ class DatabaseManager:
                 return user_id, username, email  # Benutzer-ID wird zurückgegeben, wenn das Passwort übereinstimmt
         return None
 
-    """PORTFOLIO FUNCTIONS"""
     # user_id will be taken from the session from the call to this function
     def add_portfolio(self, user_id, portfolio_name):
             portfolio_id = str(uuid.uuid4())
@@ -102,7 +101,7 @@ class DatabaseManager:
         ''', (portfolio_id,))
         return self.cursor.fetchone()
     
-    # fetch a portfolio and its coinpairs by portfolio id ^^^ above
+    # fetch all coinpairs based on portfolios of user_id
     def get_coinpairs_by_portfolio_id(self, portfolio_id):
         self.cursor.execute('''
             SELECT coinpair FROM portfolio WHERE portfolio_id=?
@@ -120,13 +119,12 @@ class DatabaseManager:
             flash("Dieses Portfolio enthält noch keine Ticker!")
             return []
 
-    # fetch all portfolios from the db and store them in a list and store each coinpair to each portfolio
+    # fetch all portfolios of user_id
     def get_user_portfolios(self, user_id):
         self.cursor.execute('''SELECT portfolio_id, portfolio_name, coinpair, created_at FROM portfolio WHERE user_id=?''', (user_id,))
         return self.cursor.fetchall()
     
-
-    """COINPAIR FUNCTIONS"""
+    # add a coinpair to the current portfolio
     def add_coinpair(self, portfolio_id, coinpair):
         try:
             # Retrieve the user id from portfolio_id
@@ -157,10 +155,6 @@ class DatabaseManager:
         except Exception as e:
             print("Ein Fehler ist aufgetreten:", e)
             return False
-
-
-
-
 
     # remove a coinpair from a specific portfolio
     def remove_pair(self, user_id, portfolio_id, coinpair):

@@ -73,6 +73,5 @@ def export_json(portfolios):
             "portfolio_name": portfolio['portfolio_name'],
             "coinpair": coinpair_list
         })
-    print(f"export_data: {export_data}")
     return export_data
 

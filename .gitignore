@@ -1,3 +1,4 @@
+# gitignore file for python
 __pycache__/
 *.py[cod]
 cointracker.db

@@ -1,9 +1,8 @@
 # rMain.py
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, send_file, session, request
+from io import BytesIO
 from classDB import DATABASE, DatabaseManager
 from api import ERRORURL, get_coinpair_data, fetchthousand, export_json
-from io import BytesIO
-from functools import wraps
 import json, requests
 
 db = DatabaseManager(DATABASE)
@@ -194,6 +193,7 @@ def export_portfolio():
 
                 # Write to a buffer
                 buffer = BytesIO()
+                # Write the JSON data to the buffer
                 buffer.write(json.dumps(export_data).encode('utf-8'))
                 buffer.seek(0)
 
