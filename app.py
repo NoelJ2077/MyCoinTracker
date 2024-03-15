@@ -30,7 +30,7 @@ def method_not_allowed(e):
 # launch the app
 if __name__ == '__main__':
     # print routes
-    print(app.url_map)
+    #print(app.url_map)
     # listening on all local IPv4 addresses
     app.run(host='0.0.0.0', port=5000, debug=True)
 
