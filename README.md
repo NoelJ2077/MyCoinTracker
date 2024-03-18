@@ -2,7 +2,7 @@
 A simple Crypto Coin tracker with the Kraken V2 API 
 No warranty, but you can open a issue if you find bugs!
 
-# Project Structure from Root dir.
+# Project Structure from Root dir (watch this File as "code")
 MyCoinTracker/
     __pychache__
     /static
