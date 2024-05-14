@@ -2,7 +2,9 @@
 from flask import Flask, flash, render_template
 from rUser import db, user
 from rMain import main
+from managers.UserManager import UserManager
 
+# create database tables
 db.create_table()
 
 app = Flask(__name__) # register flask app with app blueprint

@@ -62,25 +62,25 @@
                     {% endfor %}
                 </div>
             </div>
-        </nav>
-        
+        </div>
+
+    </nav>
     
     <!-- Menge ihrer Coins in erster Währung eg: ETHUSDT = amount ETH * USDT = value -->
     <!-- requires database restructuring! 3 dimensional! -->
     <!-- neues Formular mit dem delete button bei jedem coinpair -->
     <div class="portfolio-display">
         {% if current_portfolio %}
-           
             
             <!-- Show Name and ID  -->
             <div id="portfolio-show-cont">
-    <h2 id="portfolio-created_at" title="{{ current_portfolio[2] }}">Erstellt am: {{ current_portfolio[2] }}</h2>
-    <h2 id="portfolio-id" title="{{ current_portfolio[0] }}">Portfolio ID: {{ current_portfolio[0] }}</h2>
-    <form action="{{ url_for('main.export_portfolio') }}" method="post">
-        <button type="submit" class="export-button">Exportieren</button>
-    </form>
-</div>
-
+                <h2 id="portfolio-created_at" title="{{ current_portfolio[2] }}">Erstellt am: {{ current_portfolio[2] }}</h2>
+                <h2 id="portfolio-id" title="{{ current_portfolio[0] }}">Portfolio ID: {{ current_portfolio[0] }}</h2>
+                <form action="{{ url_for('main.export_portfolio') }}" method="post">
+                    <button type="submit" class="export-button">Exportieren</button>
+                </form>
+            </div>
+            <!-- Show Coinpairs -->
             <table>
                 <thead>
                     <tr>

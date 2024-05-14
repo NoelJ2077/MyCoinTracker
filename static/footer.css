@@ -23,9 +23,9 @@
     margin: 0 10px;
     color: #ddd3a3; /* Ensure this color contrasts well with the footer background */
     text-decoration: none;
+    font-size: 110%;
 }
 
 .footer-content > a:hover {
     color: var(--secondary-color);
 }
-

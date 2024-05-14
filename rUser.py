@@ -1,13 +1,15 @@
 # rUser.py
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session
-from classDB import DATABASE, DatabaseManager
-from api import ERRORURL
+from managers.config import DATABASE, DatabaseManager
+from managers.UserManager import UserManager
+from managers.api import ERRORURL
 import os
+# create a new instance of the DatabaseManager class
+db = UserManager(DATABASE)
 
-db = DatabaseManager(DATABASE)
 user = Blueprint('user', __name__, static_folder="static", template_folder="templates")
 
-
+# rUser.py
 @user.route('/register', methods=['GET', 'POST'])
 def register():
     try:

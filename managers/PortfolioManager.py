@@ -1,21 +1,15 @@
-import sqlite3, uuid, hashlib, os
+# PortfolioManager.py
+import sqlite3, uuid
 from flask import flash
-from api import api_checkpair
-DATABASE = 'cointracker.db'
-# for when portfolio is created
-def getdate(): # get date in format: dd:mm:yyyy hh:mm:ss
-    import datetime
-    return datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+from managers.api import api_checkpair
+from managers.config import DATABASE, DatabaseManager, getdate
 
-class DatabaseManager:
+class PortfolioManager:
+
+    def __init__(self, db_name=DATABASE):
+        self.db_manager = DatabaseManager(db_name)
+        self.cursor = self.db_manager.cursor
     
-    # create a connection to the SQLite database and a cursor object
-    def __init__(self, db_name):
-        self.conn = sqlite3.connect(db_name, check_same_thread=False)
-        self.cursor = self.conn.cursor()
-        self.cursor.execute("PRAGMA foreign_keys = ON") # enable foreign key support
-        self.conn.commit() # commit the changes
-
     # create the tables if they don't exist
     def create_table(self):
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS users (
@@ -23,7 +17,7 @@ class DatabaseManager:
             username TEXT NOT NULL,
             email TEXT NOT NULL,
             password TEXT NOT NULL)''')
-        self.conn.commit()
+        self.db_manager.conn.commit()
 
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS portfolio (
             portfolio_id TEXT PRIMARY KEY,
@@ -32,43 +26,7 @@ class DatabaseManager:
             coinpair TEXT,
             created_at TEXT,
             FOREIGN KEY(user_id) REFERENCES users(user_id))''')
-        self.conn.commit()
-
-    # hash the password & create a new salt
-    def hash_password(self, password):
-        salt = os.urandom(32)  # Erstellen Sie ein neues Salz
-        hashed_password = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
-        return salt + hashed_password  # Speichern Sie das Salz zusammen mit dem Hash
-
-    # hash the password with the salt
-    def salt_password(self, password, salt):
-        return hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
-    
-    # insert a new user into the db
-    def add_user(self, username, email, password):
-        user_id = str(uuid.uuid4())
-        password_hash = self.hash_password(password)
-        self.cursor.execute('''INSERT INTO users (user_id, username, email, password) VALUES (?, ?, ?, ?)''', (user_id, username, email, password_hash))
-        self.conn.commit()
-        return user_id
-        
-    # fetch username from the db
-    def check_username(self, username):
-        self.cursor.execute("SELECT * FROM users WHERE username=?", (username,))
-        return self.cursor.fetchone() is not None
-    
-    # check user credentials
-    def check_credentials(self, username, password):
-        self.cursor.execute('''SELECT user_id, username, email, password FROM users WHERE username=?''', (username,))
-        user = self.cursor.fetchone()
-        if user:
-            user_id, username, email, password_hash = user
-            salt = password_hash[:32]  # Die ersten 32 Bytes des Hashes sind das Salz
-            actual_hash = password_hash[32:]  # Der Rest ist der Hash
-            new_hash = self.salt_password(password, salt)
-            if new_hash == actual_hash:
-                return user_id, username, email  # Benutzer-ID wird zurückgegeben, wenn das Passwort übereinstimmt
-        return None
+        self.db_manager.conn.commit()
 
     # user_id will be taken from the session from the call to this function
     def add_portfolio(self, user_id, portfolio_name):
@@ -78,21 +36,21 @@ class DatabaseManager:
                 INSERT INTO portfolio (portfolio_id, user_id, portfolio_name, created_at)
                 VALUES (?, ?, ?, ?)
             ''', (portfolio_id, user_id, portfolio_name, created_at))
-            self.conn.commit()
+            self.db_manager.conn.commit()
     
     # delete a portfolio from the db
     def delete_portfolio(self, user_id, portfolio_id):
         self.cursor.execute('''
             DELETE FROM portfolio WHERE user_id=? AND portfolio_id=?
         ''', (user_id, portfolio_id))
-        self.conn.commit()
+        self.db_manager.conn.commit()
 
     # rename a portfolio
     def rename_portfolio(self, user_id, portfolio_id, new_name):
         self.cursor.execute('''
             UPDATE portfolio SET portfolio_name=? WHERE user_id=? AND portfolio_id=?
         ''', (new_name, user_id, portfolio_id))
-        self.conn.commit()
+        self.db_manager.conn.commit()
     
     # fetch a portfolio by its id
     def get_portfolio_by_id(self, portfolio_id):
@@ -149,7 +107,7 @@ class DatabaseManager:
             
             # Add the coinpair to the portfolio
             self.cursor.execute('''UPDATE portfolio SET coinpair=IFNULL(coinpair, '') || ? WHERE portfolio_id=?''', (coinpair + ',', portfolio_id))
-            self.conn.commit()
+            self.db_manager.conn.commit()
             flash("Ticker erfolgreich hinzugefügt.")
             return True
         except Exception as e:
@@ -166,6 +124,6 @@ class DatabaseManager:
                 coinpairs.remove(coinpair)
                 updated_coinpairs = ','.join(coinpairs)
                 self.cursor.execute('''UPDATE portfolio SET coinpair=? WHERE user_id=? AND portfolio_id=?''', (updated_coinpairs, user_id, portfolio_id))
-                self.conn.commit()
+                self.db_manager.conn.commit()
                 flash("Ticker erfolgreich entfernt.")
 

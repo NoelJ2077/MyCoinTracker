@@ -1,11 +1,12 @@
 # rMain.py
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, send_file, session, request
 from io import BytesIO
-from classDB import DATABASE, DatabaseManager
-from api import ERRORURL, get_coinpair_data, fetchthousand, export_json
+from managers.config import DATABASE
+from managers.PortfolioManager import PortfolioManager
+from managers.api import ERRORURL, get_coinpair_data, fetchthousand, export_json
 import json, requests
 
-db = DatabaseManager(DATABASE)
+db = PortfolioManager(DATABASE)
 main = Blueprint('main', __name__, static_folder="static", template_folder="templates")
 
 # check if user is logged in
@@ -23,7 +24,7 @@ def dashboard():
         return redirect(url_for('user.login'))
 
     user_id = session['user_id']
-    portfolios = db.get_user_portfolios(user_id)
+    portfolios = db.get_user_portfolios(user_id) # problem: missing method due to method beeing in PortfolioManager.py
     coinpairs = None
     current_portfolio = None  # Initialize current_portfolio
 
