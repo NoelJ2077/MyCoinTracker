@@ -2,6 +2,7 @@
 A simple Crypto Coin tracker with the Kraken V2 API 
 No warranty, but you can open a issue if you find bugs!
 
+# To read the structure properly, open the README file in "code" mode -> https://github.com/NoelJ2077/MyCoinTracker/blob/main/README.md?plain=1
 # Project Structure from Root dir (watch this File as "code")
 MyCoinTracker/
     __pychache__
