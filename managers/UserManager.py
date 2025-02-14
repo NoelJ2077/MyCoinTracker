@@ -1,5 +1,6 @@
 import sqlite3, os, hashlib, uuid
 from managers.config import DatabaseManager, DATABASE
+from managers2.services import getdate, hashdata, salts
 
 class UserManager:
     # create a connection to the SQLite database and a cursor object
@@ -11,8 +12,8 @@ class UserManager:
     def create_table(self):
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS users (
             user_id TEXT PRIMARY KEY,
-            username TEXT NOT NULL,
-            email TEXT NOT NULL,
+            username TEXT NOT NULL UNIQUE,
+            email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL)''')
         self.db_manager.conn.commit()
 

@@ -1,0 +1,44 @@
+import requests, pytz
+from datetime import datetime
+
+API_KEY = "2ATQAHQGGKZ37KAY"
+
+def get_global_quote(ticker):
+    function2 = "GLOBAL_QUOTE"
+    # real-time price data for a stock
+    function = "TIME_SERIES_INTRADAY"
+    url = f"http://www.alphavantage.co/query?function={function2}&symbol={ticker}&apikey={API_KEY}"
+    response = requests.get(url)
+    data = response.json()
+    return data
+
+# print formatted in console
+ticker = "MSFT"
+data = get_global_quote(ticker)
+
+# Inspect the data dictionary to find the correct key for the timestamp
+print(data)  # Add this line to inspect the data
+
+# Assuming 'timestamp' is the key for the timestamp in the data dictionary
+# This line will raise a KeyError if 'timestamp' is not found in the data
+# timestamp_utc = datetime.strptime(data['timestamp'], '%Y-%m-%d %H:%M:%S')
+
+# Instead, dynamically find the correct key for the timestamp
+timestamp_key = None
+for key, value in data.items():
+    if isinstance(value, dict):
+        for sub_key, sub_value in value.items():
+            if sub_key == 'timestamp':
+                timestamp_key = sub_key
+                break
+        if timestamp_key:
+            break
+
+if timestamp_key:
+    timestamp_utc = datetime.strptime(data[timestamp_key], '%Y-%m-%d %H:%M:%S')
+    local_tz = pytz.timezone('Your_Time_Zone')  # Replace 'Your_Time_Zone' with your actual timezone, e.g., 'America/New_York'
+    timestamp_local = timestamp_utc.replace(tzinfo=pytz.utc).astimezone(local_tz)
+
+    print("Local Time:", timestamp_local.strftime('%Y-%m-%d %H:%M:%S'))
+else:
+    print("Timestamp not found in the data.")

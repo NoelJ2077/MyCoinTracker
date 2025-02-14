@@ -1,14 +1,12 @@
 # managers/config.py
-import sqlite3, os
+import sqlite3, os, datetime
 from pathlib import Path
 
 config_path = Path(__file__).resolve().parent
 project_root = config_path.parent
 DATABASE = os.path.join(project_root, 'managers', 'database.db')
 
-
 def getdate(): # get date in format: dd:mm:yyyy hh:mm:ss
-    import datetime
     return datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
 class DatabaseManager:
@@ -17,7 +15,6 @@ class DatabaseManager:
         self.cursor = self.conn.cursor()
         self.cursor.execute("PRAGMA foreign_keys = ON") # enable foreign key support
         self.conn.commit() # commit the changes
-
 
 
 # struct of the managers:
